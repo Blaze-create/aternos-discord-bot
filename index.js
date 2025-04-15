@@ -23,15 +23,15 @@ client.on('messageCreate', async message => {
         const page = await browser.newPage();
 
         try {
-            // Go directly to the login page
-            await page.goto('https://aternos.org/login/', { waitUntil: 'domcontentloaded' });
+            // Go directly to the login page and wait for network to be idle
+            await page.goto('https://aternos.org/login/', { waitUntil: 'networkidle0' });
 
             // Wait for the username input to appear and type credentials
-            await page.waitForSelector('input.username');
+            await page.waitForSelector('input.username', { timeout: 60000 }); // Increased timeout
             await page.type('input.username', process.env.ATERNOS_USERNAME);
 
             // Wait for the password input to appear and type the password
-            await page.waitForSelector('input.password');
+            await page.waitForSelector('input.password', { timeout: 60000 }); // Increased timeout
             await page.type('input.password', process.env.ATERNOS_PASSWORD);
 
             // Click the submit button
@@ -41,10 +41,10 @@ client.on('messageCreate', async message => {
             await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
 
             // Now that we are logged in, go to the server page
-            await page.goto('https://aternos.org/server/', { waitUntil: 'domcontentloaded' });
+            await page.goto('https://aternos.org/server/', { waitUntil: 'networkidle0' });
 
             // Wait for the start button to appear and click it to start the server
-            await page.waitForSelector('#start', { visible: true });
+            await page.waitForSelector('#start', { visible: true, timeout: 60000 }); // Increased timeout
             await page.click('#start');
 
             message.reply('Server start requested successfully!');
@@ -54,6 +54,7 @@ client.on('messageCreate', async message => {
             message.reply('Failed to start server.');
             await browser.close();
         }
+
 
     }
 });
