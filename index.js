@@ -1,6 +1,9 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
+
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
@@ -16,6 +19,7 @@ client.on('messageCreate', async message => {
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
+
         const page = await browser.newPage();
 
         try {
