@@ -26,8 +26,8 @@ client.on('messageCreate', async message => {
             await page.goto('https://aternos.org/go/');
             await page.goto('https://aternos.org/login/');
 
-            await page.type('#user', process.env.ATERNOS_USERNAME);
-            await page.type('#password', process.env.ATERNOS_PASSWORD);
+            await page.type('input.username', process.env.ATERNOS_USERNAME);
+            await page.type('input.password', process.env.ATERNOS_PASSWORD);
             await page.click('button[type="submit"]');
             await page.waitForNavigation();
 
