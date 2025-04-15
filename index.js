@@ -23,15 +23,27 @@ client.on('messageCreate', async message => {
         const page = await browser.newPage();
 
         try {
-            await page.goto('https://aternos.org/go/');
-            await page.goto('https://aternos.org/login/');
+            // Go directly to the login page
+            await page.goto('https://aternos.org/login/', { waitUntil: 'domcontentloaded' });
 
+            // Wait for the username input to appear and type credentials
+            await page.waitForSelector('input.username');
             await page.type('input.username', process.env.ATERNOS_USERNAME);
-            await page.type('input.password', process.env.ATERNOS_PASSWORD);
-            await page.click('button[type="submit"]');
-            await page.waitForNavigation();
 
-            await page.goto('https://aternos.org/server/');
+            // Wait for the password input to appear and type the password
+            await page.waitForSelector('input.password');
+            await page.type('input.password', process.env.ATERNOS_PASSWORD);
+
+            // Click the submit button
+            await page.click('button[type="submit"]');
+
+            // Wait for the page to navigate after submitting the login form
+            await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
+
+            // Now that we are logged in, go to the server page
+            await page.goto('https://aternos.org/server/', { waitUntil: 'domcontentloaded' });
+
+            // Wait for the start button to appear and click it to start the server
             await page.waitForSelector('#start', { visible: true });
             await page.click('#start');
 
@@ -42,6 +54,7 @@ client.on('messageCreate', async message => {
             message.reply('Failed to start server.');
             await browser.close();
         }
+
     }
 });
 
